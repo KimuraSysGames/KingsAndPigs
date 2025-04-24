@@ -4,30 +4,46 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    //COMPONENTES
     private Rigidbody2D m_rigidbody2D;
     private GatherInput m_gatherInput;
     private Transform m_transform;
+    private Animator m_animator;
+
+    //VALORES
     [SerializeField] private float speed;
     private int direction = 1;
+    private int idSpeed;
 
     void Start()
     {
         m_gatherInput = GetComponent<GatherInput>();
         m_transform = GetComponent<Transform>();
         m_rigidbody2D = GetComponent<Rigidbody2D>();
+        m_animator = GetComponent<Animator>();
+        idSpeed = Animator.StringToHash("Speed");
+    }
+
+
+    private void FixedUpdate()
+    {
+        Move();
+    }
+    private void Update()
+    {
+        SetAnimatorValue();
         
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void SetAnimatorValue()
     {
-        Move();
+        m_animator.SetFloat(idSpeed, Mathf.Abs(m_rigidbody2D.linearVelocityX));   // RUN animacion
     }
 
     private void Move()
     {
         Flip();
-        m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherInput.ValueX, m_rigidbody2D.linearVelocityY);
+        m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherInput.ValueX, m_rigidbody2D.linearVelocityY);  // RUN movimiento
         
     }
 
@@ -35,7 +51,7 @@ public class PlayerController : MonoBehaviour
     {
         if(m_gatherInput.ValueX * direction < 0)
         {
-            m_transform.localScale = new Vector3(-m_transform.localScale.x, 1, 1);
+            m_transform.localScale = new Vector3(-m_transform.localScale.x, 1, 1);  // FLIP cambio de direccion
             direction *= -1;
         }
     }
