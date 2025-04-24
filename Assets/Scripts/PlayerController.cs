@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     private int direction = 1;
     private int idSpeed;
+    [SerializeField] private float jumpForce;
 
     void Start()
     {
@@ -23,22 +24,24 @@ public class PlayerController : MonoBehaviour
         m_animator = GetComponent<Animator>();
         idSpeed = Animator.StringToHash("Speed");
     }
-
-
-    private void FixedUpdate()
-    {
-        Move();
-    }
     private void Update()
     {
         SetAnimatorValue();
-        
+
     }
 
     private void SetAnimatorValue()
     {
         m_animator.SetFloat(idSpeed, Mathf.Abs(m_rigidbody2D.linearVelocityX));   // RUN animacion
     }
+
+    private void FixedUpdate()
+    {
+        Move();
+        Jump();
+    }
+
+
 
     private void Move()
     {
@@ -54,5 +57,13 @@ public class PlayerController : MonoBehaviour
             m_transform.localScale = new Vector3(-m_transform.localScale.x, 1, 1);  // FLIP cambio de direccion
             direction *= -1;
         }
+    }
+    private void Jump()
+    {
+        if (m_gatherInput.IsJumping)
+        {
+            m_rigidbody2D.linearVelocity = new Vector2(speed * m_gatherInput.ValueX, jumpForce);
+        }
+        m_gatherInput.IsJumping = false;
     }
 }
